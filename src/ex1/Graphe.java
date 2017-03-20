@@ -1,7 +1,9 @@
 package ex1;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Graphe {
 
@@ -29,6 +31,51 @@ public class Graphe {
 		mot2.addVoisin(mot1);
 		Arrete arrete = new Arrete(mot1, mot2);
 		this.arretes.add(arrete);
+	}
+	
+	// parcours en profondeur pour tous les mots
+	public String parcoursEnProfondeur() {
+		Set<Mot> dejaVisites = new HashSet<Mot>();
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for(Mot mot : this.getMots()) {
+			if(!dejaVisites.contains(mot)) {
+				i++;
+				builder.append(i + ": " + this.parcoursEnProfondeur(mot, null, dejaVisites) + "\n");
+			}
+		}
+		return builder.toString();
+	}
+	
+	public String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites) {
+		// Dans le cas où on veut parcourir un seul mot
+		if(dejaVisites == null)
+			dejaVisites = new HashSet<Mot>();
+		List<Mot> parcours = new ArrayList<Mot>();
+		return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours);
+
+	}
+	
+	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours) {
+		dejaVisites.add(mot);
+		if(!parcours.contains(mot))
+			parcours.add(mot);
+		for(Mot voisin : mot.getVoisins()) {
+			if(voisin.equals(mot2)){
+				return " " + voisin.getValue();
+			}
+			
+			if(!dejaVisites.contains(voisin)) {
+				return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours);
+			}
+		}
+		parcours.remove(parcours.size() - 1);
+		if(!parcours.isEmpty())
+			return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours);
+		
+		if(mot2 == null)
+			return "";
+		else return null;
 	}
 	
 }

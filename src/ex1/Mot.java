@@ -35,9 +35,11 @@ public class Mot implements Comparable<Mot> {
 	public boolean differeDeNLettres(Mot mot, int n) {
 		int i = 0;
 		int diff = 0;
-		while(i < this.value.length())
+		while(i < this.value.length()) {
 			if(this.getValue().charAt(i) != mot.getValue().charAt(i))
 				diff++;
+			i++;
+		}
 		return diff == n;
 	}
 	
