@@ -24,14 +24,15 @@ public class Main {
 		Main main = new Main();
 		Graphe g = new Graphe(Dicos.dico3);
 		main.lettreQuiSaute(g);
-		System.out.println(g.parcoursEnProfondeur());
+		//System.out.println(g.parcoursEnProfondeur());
 		
 		//exo3
 		// gag
-		Mot mot1 = g.getMots().get(0);
+		Mot mot1 = g.getMots().get(g.getMots().indexOf(new Mot("gag")));
 		// arc
-		Mot mot2 = g.getMots().get(g.getMots().size() - 1);
-		System.out.println(g.parcoursEnProfondeur(mot1, mot2, new HashSet<Mot>()));
+		//Mot mot2 = g.getMots().get(g.getMots().size() - 1);
+		Mot mot2 = g.getMots().get(g.getMots().indexOf(new Mot("arc")));
+		System.out.println(g.parcoursEnProfondeur(mot1, mot2, null, true));
 	}
 
 }

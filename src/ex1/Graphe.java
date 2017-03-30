@@ -41,41 +41,60 @@ public class Graphe {
 		for(Mot mot : this.getMots()) {
 			if(!dejaVisites.contains(mot)) {
 				i++;
-				builder.append(i + ": " + this.parcoursEnProfondeur(mot, null, dejaVisites) + "\n");
+				builder.append(i + ": " + this.parcoursEnProfondeur(mot, null, dejaVisites, false) + "\n");
 			}
 		}
 		return builder.toString();
 	}
 	
-	public String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites) {
+	// ici, on laisse le paramètre dejaVisites, car utilisés lors du parcours pour tous les mots
+	public String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, boolean chemin) {
 		// Dans le cas oÃ¹ on veut parcourir un seul mot
 		if(dejaVisites == null)
 			dejaVisites = new HashSet<Mot>();
 		List<Mot> parcours = new ArrayList<Mot>();
-		return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours);
+		return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, chemin);
 
 	}
 	
-	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours) {
+	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean chemin) {
 		dejaVisites.add(mot);
 		if(!parcours.contains(mot))
 			parcours.add(mot);
-		for(Mot voisin : mot.getVoisins()) {
-			if(voisin.equals(mot2)){
-				return " " + voisin.getValue();
+		if(mot.getVoisins().contains(mot2)) {
+			if(chemin) {
+				String res = "";
+				for(Mot m : parcours)
+					res += " " + m.getValue();
+				return res.substring(1);
 			}
-			
+			else
+				return " " + mot2.getValue();
+		}
+		for(Mot voisin : mot.getVoisins()) {
 			if(!dejaVisites.contains(voisin)) {
-				return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours);
+				if(!chemin){					
+					return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, chemin);
+				}
+				this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, chemin);
 			}
 		}
+		String res = "";
+		for(Mot m : parcours)
+			res += " " + m.getValue();
+		System.out.print(parcours.size());
+		System.out.println(" : " + res.substring(1));
 		parcours.remove(parcours.size() - 1);
-		if(!parcours.isEmpty())
-			return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours);
+		if(!parcours.isEmpty()) {
+			if(!chemin) {				
+				return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, chemin);
+			}
+			this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, chemin);
+		}
 		
-		if(mot2 == null)
-			return "";
-		else return null;
+		//if(mot2 == null)
+		return "";
+		//else return null;
 	}
 	
 }

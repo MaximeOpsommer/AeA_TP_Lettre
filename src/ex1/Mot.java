@@ -46,14 +46,21 @@ public class Mot implements Comparable<Mot> {
 	public String toString() {
 		String res = "Mot: " + this.value + "\nVoisins : [";
 		for(Mot mot : this.voisins)
-			res += mot + ", ";
-		res = res.substring(0, res.length() - 2) + "]";
+			res += mot.getValue() + ", ";
+		res = res.substring(0, res.length() - 2) + "]\n";
 		return res;
 	}
 
 	@Override
 	public int compareTo(Mot mot) {
 		return this.value.compareToIgnoreCase(mot.getValue());
+	}
+	
+	@Override
+	public boolean equals(Object mot) {
+		if(mot == null || !(mot instanceof Mot))
+			return false;
+		return this.value.equals(((Mot) mot).getValue());
 	}
 	
 }
