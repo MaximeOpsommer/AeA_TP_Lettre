@@ -48,53 +48,70 @@ public class Graphe {
 	}
 	
 	// ici, on laisse le paramètre dejaVisites, car utilisés lors du parcours pour tous les mots
-	public String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, boolean chemin) {
+	public String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, boolean parcoursPropre) {
 		// Dans le cas oÃ¹ on veut parcourir un seul mot
 		if(dejaVisites == null)
 			dejaVisites = new HashSet<Mot>();
 		List<Mot> parcours = new ArrayList<Mot>();
-		return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, chemin);
+		if(parcoursPropre)
+			return this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre);
+		else
+			return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre);
 
 	}
 	
-	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean chemin) {
+	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean parcoursPropre) {
+		//ajout du mot au mots visités 
 		dejaVisites.add(mot);
+		
+		//ajout du mot au parcours
 		if(!parcours.contains(mot))
 			parcours.add(mot);
+		
+		//condition d'arrêt : si le mot courant a dans ses voisins le mot recherché
 		if(mot.getVoisins().contains(mot2)) {
-			if(chemin) {
-				String res = "";
-				for(Mot m : parcours)
-					res += " " + m.getValue();
-				return res.substring(1);
+			if(parcoursPropre){
+				parcours.add(mot2);
+				return printParcours(parcours);
 			}
 			else
 				return " " + mot2.getValue();
 		}
+		
+		//sinon on appel recursivement sur chaque voisins
 		for(Mot voisin : mot.getVoisins()) {
+			
+			//on verifie qu'il n'a pas déjà été visité ultérieurement
 			if(!dejaVisites.contains(voisin)) {
-				if(!chemin){					
-					return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, chemin);
-				}
-				this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, chemin);
+				if(!parcoursPropre)				
+					return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre);
+				else
+					return this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre);
 			}
 		}
-		String res = "";
+		
+		//on arrive ici si les voisisn ont tous déjà été visités et qu'on a pas trouvé le mot
+		/*String res = "";
 		for(Mot m : parcours)
 			res += " " + m.getValue();
 		System.out.print(parcours.size());
-		System.out.println(" : " + res.substring(1));
+		System.out.println(" : " + res.substring(1));*/
+		
 		parcours.remove(parcours.size() - 1);
 		if(!parcours.isEmpty()) {
-			if(!chemin) {				
-				return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, chemin);
-			}
-			this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, chemin);
+			return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, parcoursPropre);
 		}
 		
 		//if(mot2 == null)
 		return "";
 		//else return null;
+	}
+
+	public String printParcours(List<Mot> parcours) {
+		String res = "";
+		for(Mot m : parcours)
+			res += " " + m.getValue();
+		return res.substring(1);
 	}
 	
 }
