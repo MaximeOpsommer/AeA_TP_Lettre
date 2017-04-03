@@ -22,7 +22,9 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Main main = new Main();
-		//Graphe g = new Graphe(Dicos.dico3);
+		Graphe g = new Graphe(Dicos.dico3);
+		
+		/*
 		Graphe g = new Graphe(Dicos.dico6);
 		g.ajouterArrete(g.getMots().get(0), g.getMots().get(1));
 		g.ajouterArrete(g.getMots().get(0), g.getMots().get(3));
@@ -33,22 +35,24 @@ public class Main {
 		g.ajouterArrete(g.getMots().get(3), g.getMots().get(5));
 		g.ajouterArrete(g.getMots().get(4), g.getMots().get(5));
 		
+		*/
 		
-		//main.lettreQuiSaute(g);
+		
+		main.lettreQuiSaute(g);
 		//System.out.println(g.parcoursEnProfondeur());
 		
 		//exo3
 		// gag
-		//Mot mot1 = g.getMots().get(g.getMots().indexOf(new Mot("gag")));
+		Mot mot1 = g.getMots().get(g.getMots().indexOf(new Mot("gag")));
 		// arc
 		//Mot mot2 = g.getMots().get(g.getMots().size() - 1);
-		//Mot mot2 = g.getMots().get(g.getMots().indexOf(new Mot("arc")));
+		Mot mot2 = g.getMots().get(g.getMots().indexOf(new Mot("arc")));
 		//System.out.println(g.parcoursEnProfondeur(mot1, mot2, null, true));
 		
-		Mot depart = g.getMots().get(0);
-		Mot arrivee = g.getMots().get(5);
+		//Mot depart = g.getMots().get(0);
+		//Mot arrivee = g.getMots().get(5);
 		
-		System.out.println(g.bfs(depart, arrivee));
+		System.out.println(g.bfs(mot1, mot2));
 		
 		//////
 	}

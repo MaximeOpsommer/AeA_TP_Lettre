@@ -131,7 +131,6 @@ public class Graphe {
 			//on choisit le sommet non marque de plus petit valeur different de -1
 			int indexOfMinSommet = getMinSommet(marques, longeurs);
 			marques[indexOfMinSommet] = true;
-			System.out.println(this.mots.get(indexOfMinSommet).getValue());
 			current = this.mots.get(indexOfMinSommet);
 			
 		}
@@ -148,10 +147,10 @@ public class Graphe {
 		String res = ""; 
 		Mot tmp = arrivee;
 		while(!tmp.equals(depart)){
-			res = tmp.getValue() + " -> " + res;
-			tmp = previous[indexArrivee];
+			res =  " -> " + tmp.getValue() + res;
+			tmp = previous[this.mots.indexOf(tmp)];
 		}
-		return depart.getValue() + " -> " + res;
+		return depart.getValue() + res;
 	}
 
 	private int getMinSommet(boolean[] marques, int[] longeur) {
