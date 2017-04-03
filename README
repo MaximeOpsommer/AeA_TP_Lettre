@@ -1,0 +1,9 @@
+à faire
+
+2 cas possibles :
+
+si chemin de A vers B possible, lorsqu'on marque B, alors cela signifie que B était un minium
+non marqué, donc on peut s'arreter puisque les autres chemins seront forcément plus grands
+
+
+si tous les sommets sont marqués ou valent -1, alors pas de chemin possible de A vers B.

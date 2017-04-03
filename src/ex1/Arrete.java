@@ -17,5 +17,9 @@ public class Arrete {
 	public Mot getMot2() {
 		return this.mot2;
 	}
+	
+	public String toString() {
+		return this.mot1.getValue() + " - " + this.mot2.getValue();
+	}
 
 }
