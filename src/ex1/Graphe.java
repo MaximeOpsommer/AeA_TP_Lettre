@@ -114,7 +114,7 @@ public class Graphe {
 		longeurs[this.mots.indexOf(current)] = 0;
 		Mot[] previous = new Mot[this.mots.size()];
 		
-		
+		boolean arriveeFound = false;
 		while(!allVisited(marques)){
 			int indexOfCurrent = this.mots.indexOf(current);
 			for(Mot voisin : current.getVoisins()){
@@ -128,15 +128,44 @@ public class Graphe {
 				}
 			}
 			
-			//on choisit le sommet non marque de plus petit valeur different de -1
+			//on choisit le sommet non marque de plus petit poids different de -1
+			//si c'est le final on vérifie que ses voisins ont été marqués, si oui return
+			//si on trouve -1, cela signifie qu'il n'y a pas de chemin possible
 			int indexOfMinSommet = getMinSommet(marques, longeurs);
-			marques[indexOfMinSommet] = true;
-			current = this.mots.get(indexOfMinSommet);
+		
+			if(indexOfMinSommet != -1){
+				marques[indexOfMinSommet] = true;
+				
+				if(current.equals(arrivee)){
+					//verifier que ses voisins sont marqués, si oui return
+					arriveeFound = true;
+					if(verifyArriveeVoisins(arrivee, marques)){
+						return printParcrous(depart, arrivee, previous);
+					}
+				}
+				
+				current = this.mots.get(indexOfMinSommet);
+				
+			} else {
+				if(arriveeFound)
+					return printParcrous(depart, arrivee, previous);
+				else
+					return "Il n'y a pas de chemin possible";
+			}
 			
 		}
 		
 		//on affiche le parcours
 		 return printParcrous(depart, arrivee, previous);
+	}
+	
+	private boolean verifyArriveeVoisins(Mot arrivee, boolean[] marques){
+		for(Mot voisinsArrivee : arrivee.getVoisins()){
+			if(!marques[this.mots.indexOf(voisinsArrivee)]){
+				return false;
+			}
+		}
+		return true;
 	}
 
 
