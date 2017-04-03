@@ -158,10 +158,12 @@ public class Graphe {
 		int min = -1;
 		for(int i = 0; i < marques.length ; i++){
 			if(!marques[i]){
-				if(min == -1)
-					min = i;
-				else if(longeur[i] < min)
-					min = i;
+				if(longeur[i] != -1) {					
+					if(min == -1)
+						min = i;
+					else if(longeur[i] < longeur[min])
+						min = i;
+				}
 			}
 		}
 		
