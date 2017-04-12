@@ -11,11 +11,16 @@ si tous les sommets sont marqués ou valent -1, alors pas de chemin possible de A
 
 -----------------------------------------------------------------------
 MODIFS APPORTEES AU CODE DE LA QUESTION 3 POUR REPONDRE A LA QUESTION 4
+
+procéder comme pour le bfs avec un tableau de précédents, on ne remplira pas dejaVisites si parcoursPropre == true
+on retourne les précédents en partant de mot2 à la fin (quand on atteint un cas d'arret)
 -----------------------------------------------------------------------
 
 Quand le prochain noeud a déja au moins un voisin marqué (qui n'est pas le noeud actuel) :
 
 	le "précédent" de ce prochain noeud sera celui qui propose le plus petit poids
+	tant que le dernier du parcours n'est pas le "précédent" qu'on vient de nommer
+		on supprimer le dernier du parcours
 
 -------------------------------------------
 Sinon
