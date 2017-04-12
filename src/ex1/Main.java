@@ -40,6 +40,9 @@ public class Main {
 		
 		main.lettreQuiSaute(g);
 		//System.out.println(g.parcoursEnProfondeur());
+		/*for(Arrete a : g.getArretes()) {			
+			System.out.println(a);
+		}*/
 		
 		//exo3
 		// gag
@@ -52,6 +55,7 @@ public class Main {
 		//Mot depart = g.getMots().get(0);
 		//Mot arrivee = g.getMots().get(5);
 		
+		System.out.println(g.parcoursEnProfondeur(mot1, mot2, null, true));
 		System.out.println(g.bfs(mot1, mot2));
 		
 		//////

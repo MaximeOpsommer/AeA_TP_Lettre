@@ -7,3 +7,30 @@ non marqué, donc on peut s'arreter puisque les autres chemins seront forcément p
 
 
 si tous les sommets sont marqués ou valent -1, alors pas de chemin possible de A vers B.
+
+
+-----------------------------------------------------------------------
+MODIFS APPORTEES AU CODE DE LA QUESTION 3 POUR REPONDRE A LA QUESTION 4
+-----------------------------------------------------------------------
+
+Quand le prochain noeud a déja au moins un voisin marqué (qui n'est pas le noeud actuel) :
+
+	le "précédent" de ce prochain noeud sera celui qui propose le plus petit poids
+
+-------------------------------------------
+Sinon
+
+Quand on atteint le dernier mot :
+
+- si tous les sommets sont visités
+	fin
+- sinon
+	Mot precendent ...
+	while(precedent.voisins sont tous marqués ) {
+		if(precedent == debut)
+			break;
+			// FIN
+		precedent = precedent.precedent
+	}
+	// reprise de la recherche
+	suivant = voisin non marqué
