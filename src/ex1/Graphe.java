@@ -55,140 +55,147 @@ public class Graphe {
 		if(dejaVisites == null)
 			dejaVisites = new HashSet<Mot>();
 		List<Mot> parcours = new ArrayList<Mot>();
-		if(parcoursPropre){
-			//on init les map de poids et des prÃ©cÃ©dents
+		if(parcoursPropre) {
 			Map<Mot, Mot> previous = new HashMap<Mot, Mot>();
 			previous.put(mot, null);
 			Map<Mot, Integer> poids = new HashMap<Mot, Integer>();
 			poids.put(mot, 0);
-			return this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre, poids, previous);
-		} else{
-			return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre, null, null);
+			return this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre);
 		}
+		else
+			return mot.getValue() + this.parcoursEnProfondeur(mot, mot2, dejaVisites, parcours, parcoursPropre);
 
 	}
 	
-	private boolean allDejaVisites(Set<Mot> v){
-		for(Mot m : this.mots){
-			if(!v.contains(m)){
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	private boolean voisinsTousMarques(Mot m, Set<Mot> dejaV){
-		for(Mot v : m.getVoisins()){
-			if(!dejaV.contains(v)){
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean parcoursPropre, Map<Mot, Integer> poids, Map<Mot, Mot> previous) {
-		//ajout du mot au mots visitï¿½s 
+	private String parcoursEnProfondeur(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean parcoursPropre) {
+		//ajout du mot au mots visites 
 		dejaVisites.add(mot);
 		
 		//ajout du mot au parcours
 		if(!parcours.contains(mot))
 			parcours.add(mot);
 		
-		//condition d'arrï¿½t : si le mot courant a dans ses voisins le mot recherchï¿½
+		//condition d'arret : si le mot courant a dans ses voisins le mot recherche
 		if(mot.getVoisins().contains(mot2)) {
 			if(parcoursPropre){
-				//parcours.add(mot2);
-				
-				if(allDejaVisites(dejaVisites)){
-					return printParcours(parcours);
-				} else {
-					Mot precedent = mot;
-					while(voisinsTousMarques(precedent, dejaVisites)){
-						if(precedent.equals(parcours.get(0))){
-							parcours.add(mot2);
-							return printParcours(parcours);
-						}
-						precedent = previous.get(precedent);
-					}
-				}
-			} else{
-				return " " + mot2.getValue();
+				parcours.add(mot2);
+				return printParcours(parcours);
 			}
+			else
+				return " " + mot2.getValue();
 		}
 		
 		//sinon on appel recursivement sur chaque voisins
 		for(Mot voisin : mot.getVoisins()) {
 			
-			//on verifie qu'il n'a pas dï¿½jï¿½ ï¿½tï¿½ visitï¿½ ultï¿½rieurement
+			//on verifie qu'il n'a pas deja ete visite ulterieurement
 			if(!dejaVisites.contains(voisin)) {
 				if(!parcoursPropre)				
-					return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre, poids, previous);
+					return " " + voisin.getValue() + this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre);
+				else
+					return this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre);
+			}
+		}
+
+		//on arrive ici si les voisisn ont tous deje ete visites et qu'on a pas trouve le mot		
+		parcours.remove(parcours.size() - 1);
+		if(!parcours.isEmpty()) {
+			return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, parcoursPropre);
+		}
+		return "";
+	}
+	
+	public String parcoursEnProfondeurQ4(Mot mot, Mot mot2, Set<Mot> dejaVisites, List<Mot> parcours, boolean parcoursPropre, Map<Mot, Integer> poids, Map<Mot, Mot> precedents) {
+		//ajout du mot au mots visites 
+		dejaVisites.add(mot);
+		
+		//ajout du mot au parcours
+		if(!parcours.contains(mot))
+			parcours.add(mot);
+		
+		//condition d'arret : si le mot courant est la mot de fin
+		if(mot.equals(mot2)) {
+			if(allVisited(dejaVisites)) {
+				// FIN
+				return printParcours(parcours);
+			}
+			else {
+				Mot previous = parcours.get(parcours.size() - 1);
+				Mot tmp = null;
+				while((previous = precedents.get(previous)) != null && (tmp = getVoisinNonMarque(previous, dejaVisites)) == null) {
+					// RIEN
+				}
+				if(previous == null) {
+					// FIN
+					return printParcours(parcours);
+				}
+				else {
+					// on efface le parcours jusqu'à previous
+					Mot last = parcours.get(parcours.size() - 1);
+					while(!last.equals(previous)) {
+						parcours.remove(last);
+						last = parcours.get(parcours.size() - 1);
+					}
+					// on se dirige vers tmp
+					return this.parcoursEnProfondeurQ4(tmp, mot2, dejaVisites, parcours, parcoursPropre, poids, precedents);
+				}
+			}
+			/*if(parcoursPropre){
+				parcours.add(mot2);
+				return printParcours(parcours);
+			}
+			else
+				return " " + mot2.getValue();*/
+		}
+		
+		//sinon on appel recursivement sur chaque voisins
+		for(Mot voisin : mot.getVoisins()) {
+			
+			//on verifie qu'il n'a pas deja ete visite ulterieurement
+			if(!dejaVisites.contains(voisin)) {
+				if(!parcoursPropre)				
+					return " " + voisin.getValue() + this.parcoursEnProfondeurQ4(voisin, mot2, dejaVisites, parcours, parcoursPropre, poids, precedents);
 				else {
 					// Si le prochain noeud a deja au moins un voisin marque (dejaVisite)
-					// (qui n'est pas le noeud actuel), alors on vÃ©rifie s'il existe un plus court chemin
-					if(aUnVoisinMarque(mot, dejaVisites, voisin)){
+					// (qui n'est pas le noeud actuel), alors on verifie s'il existe un plus court chemin
+					if(aUnVoisinMarque(mot, dejaVisites, voisin)) {
 						Mot plusPetitPoids = mot;
 						for(Mot m : voisin.getVoisins()) {
 							if(dejaVisites.contains(m)) {
-								if(poids.get(m) < poids.get(plusPetitPoids) ) {
+								if(poids.get(m) < poids.get(plusPetitPoids)) {
 									plusPetitPoids = m;
 								}
 							}
 						}
-						//TODO on supprime le dernier du parcours tant que le mot n'est pas celui avec le plus petit poids proposÃ©
-						while(!parcours.get(parcours.size() -1).equals(plusPetitPoids)){
-							parcours.remove(parcours.size() -1);
+						// on supprime le dernier du parcours tant que le mot n'est pas celui avec le plus petit poids
+						while(!parcours.get(parcours.size() - 1 ).equals(plusPetitPoids)) {
+							parcours.remove(parcours.size() - 1);
 						}
-						
+						precedents.put(voisin, plusPetitPoids);
 					}
-					previous.put(voisin, mot);
-					poids.put(voisin, poids.get(previous.get(voisin)) + 1);
-					return this.parcoursEnProfondeur(voisin, mot2, dejaVisites, parcours, parcoursPropre, poids, previous);
+					else
+						precedents.put(voisin, mot);
+					poids.put(voisin, poids.get(precedents.get(voisin)) + 1);
+					return this.parcoursEnProfondeurQ4(voisin, mot2, dejaVisites, parcours, parcoursPropre, poids, precedents);
 				}
 			}
 		}
 
-		if(parcoursPropre && voisinsTousMarques(mot, dejaVisites)) {
-			// on reprends le parcours a partit d'un mot oÃ¹ il reste des voisins non marques
-			Mot next = null;
-			for(Mot m : mot.getVoisins()) {
-				if(!voisinsTousMarques(m, dejaVisites)) {
-					next = m;
-					break;
-				}
+		//on arrive ici si les voisisn ont tous deja ete visites et qu'on a pas trouve le mot
+		// on regarde parmis les mots visites, s'il leur reste au moins un voisin non visite
+		for(Mot m : dejaVisites) {
+			// si on en trouve un
+			if(getVoisinNonMarque(m, dejaVisites) != null) {
+				// on reconstruit le parcours a partir de ce mot et de la liste des precedents
+				parcours = rebuildParcours(m, precedents, poids);
+				return this.parcoursEnProfondeurQ4(m, mot2, dejaVisites, parcours, parcoursPropre, poids, precedents);
 			}
-			// on rÃ©Ã©crit le parcours
-			parcours.clear();
-			int p = poids.get(next);
-			for(int i = 0; i <= p; i++)
-				parcours.add(null);
-			parcours.set(p, next);
-			Mot prev = previous.get(next);
-			while(prev != null) {
-				parcours.set(poids.get(prev), prev);
-				prev = previous.get(prev);
-			}
-			// on rapelle la fonction
-			return this.parcoursEnProfondeur(next, mot2, dejaVisites, parcours, parcoursPropre, poids, previous);
 		}
-		
-		//on arrive ici si les voisisn ont tous dï¿½jï¿½ ï¿½tï¿½ visitï¿½s et qu'on a pas trouvï¿½ le mot		
-		parcours.remove(parcours.size() - 1);
+		/*parcours.remove(parcours.size() - 1);
 		if(!parcours.isEmpty()) {
-			return this.parcoursEnProfondeur(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, parcoursPropre, poids, previous);
-		}
-		return "";
-	}
-
-	private boolean aUnVoisinMarque(Mot mot, Set<Mot> dejaVisites, Mot voisin) {
-		boolean aUnVoisinMarque = false;
-		for(Mot m : voisin.getVoisins()) {
-			if(dejaVisites.contains(m) && !m.equals(mot)) {
-				aUnVoisinMarque = true;
-				break;
-			}
-		}
-		return aUnVoisinMarque;
+			return this.parcoursEnProfondeurQ4(parcours.get(parcours.size() - 1), mot2, dejaVisites, parcours, parcoursPropre, poids, precedents);
+		}*/
+		return "aucun chemin possible";
 	}
 
 	
@@ -222,7 +229,7 @@ public class Graphe {
 			}
 			
 			//on choisit le sommet non marque de plus petit poids different de -1
-			//si c'est le final on vï¿½rifie que ses voisins ont ï¿½tï¿½ marquï¿½s, si oui return
+			//si c'est le final on vérifie que ses voisins ont été marqués, si oui return
 			//si on trouve -1, cela signifie qu'il n'y a pas de chemin possible
 			int indexOfMinSommet = getMinSommet(marques, longeurs);
 		
@@ -230,7 +237,7 @@ public class Graphe {
 				marques[indexOfMinSommet] = true;
 				
 				if(current.equals(arrivee)){
-					//verifier que ses voisins sont marquï¿½s, si oui return
+					//verifier que ses voisins sont marqués, si oui return
 					arriveeFound = true;
 					if(verifyArriveeVoisins(arrivee, marques)){
 						return printParcrous(depart, arrivee, previous);
@@ -262,10 +269,7 @@ public class Graphe {
 	}
 
 
-	private String printParcrous(Mot depart, Mot arrivee, Mot[] previous) {
-		int indexDepart = this.mots.indexOf(depart);
-		int indexArrivee = this.mots.indexOf(arrivee);
-		
+	private String printParcrous(Mot depart, Mot arrivee, Mot[] previous) {		
 		String res = ""; 
 		Mot tmp = arrivee;
 		while(!tmp.equals(depart)){
@@ -299,6 +303,31 @@ public class Graphe {
 		return l;
 	}
 	
+	private boolean aUnVoisinMarque(Mot mot, Set<Mot> dejaVisites, Mot voisin) {
+		for(Mot m : voisin.getVoisins()) {
+			if(dejaVisites.contains(m) && !m.equals(mot)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Mot getVoisinNonMarque(Mot mot, Set<Mot> dejaVisites) {
+		for(Mot voisin : mot.getVoisins()) {
+			if(!dejaVisites.contains(voisin))
+				return voisin;
+		}
+		return null;
+	}
+
+	private boolean allVisited(Set<Mot> dejaVisites) {
+		for(Mot mot : this.mots) {
+			if(!dejaVisites.contains(mot))
+				return false;
+		}
+		return true;
+	}
+	
 	private boolean allVisited(boolean[] v){
 		for(int i = 0; i < v.length; i++){
 			if(!v[i]){
@@ -321,6 +350,21 @@ public class Graphe {
 		for(Mot m : parcours)
 			res += " " + m.getValue();
 		return res.substring(1);
+	}
+	
+	private List<Mot> rebuildParcours(Mot last, Map<Mot, Mot> precedents, Map<Mot, Integer> poids) {
+		List<Mot> res = new ArrayList<Mot>();
+		
+		for(int i = 0; i <= poids.get(last); i++)
+			res.add(null);
+		
+		Mot mot = last;
+		while(mot != null) {
+			res.set(poids.get(mot), mot);
+			mot = precedents.get(mot);
+		}
+		
+		return res;
 	}
 	
 }

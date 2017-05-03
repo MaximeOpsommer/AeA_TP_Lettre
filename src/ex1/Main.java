@@ -1,7 +1,10 @@
 package ex1;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 	
@@ -55,7 +58,10 @@ public class Main {
 		//Mot depart = g.getMots().get(0);
 		//Mot arrivee = g.getMots().get(5);
 		
-		System.out.println(g.parcoursEnProfondeur(mot1, mot2, null, true));
+		//System.out.println(g.parcoursEnProfondeur(mot1, mot2, null, true));
+		Map<Mot, Integer> poids = new HashMap<Mot, Integer>();
+		poids.put(mot1, 0);
+		System.out.println(g.parcoursEnProfondeurQ4(mot1, mot2, new HashSet<Mot>(), new ArrayList<Mot>(), true, poids, new HashMap<Mot, Mot>()));
 		System.out.println(g.bfs(mot1, mot2));
 		
 		//////
